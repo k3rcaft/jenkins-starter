@@ -2,9 +2,16 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                withCredentials([string(credentialsId: 'github-pat', variable: 'pat')]) {
+                    git branch: 'main', url: "https://${pat}@github.com/k3rcaft/java-azure-integration-api.git"
+                }
+            }
+        }
         stage('Build') {
             steps {
-                echo 'Building..'
+                sh "./gradlew clean build"
             }
         }
         stage('Test') {
@@ -14,7 +21,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying....'
+                echo 'Deploying..'
             }
         }
     }
